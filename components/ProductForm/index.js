@@ -2,9 +2,8 @@ import { StyledForm, StyledHeading, StyledLabel } from "./ProductForm.styled";
 import { StyledButton } from "../Button/Button.styled";
 import useSWR from "swr";
 
-export default function ProductForm() {
+export default function ProductForm({ onSubmit, value, isEditMode }) {
   const { mutate } = useSWR("/api/products");
-
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -29,29 +28,44 @@ export default function ProductForm() {
   }
 
   return (
-    <StyledForm onSubmit={handleSubmit}>
-      <StyledHeading>Add a new Fish</StyledHeading>
+    <StyledForm onSubmit={onSubmit ? onSubmit : handleSubmit}>
+      <StyledHeading>
+        {isEditMode ? "Edit fish" : "Add a new Fish"}
+      </StyledHeading>
       <StyledLabel htmlFor="name">
         Name:
-        <input type="text" id="name" name="name" />
+        <input type="text" id="name" name="name" defaultValue={value?.name} />
       </StyledLabel>
       <StyledLabel htmlFor="description">
         Description:
-        <input type="text" id="description" name="description" />
+        <input
+          type="text"
+          id="description"
+          name="description"
+          defaultValue={value?.description}
+        />
       </StyledLabel>
       <StyledLabel htmlFor="price">
         Price:
-        <input type="number" id="price" name="price" min="0" />
+        <input
+          type="number"
+          id="price"
+          name="price"
+          min="0"
+          defaultValue={value?.price}
+        />
       </StyledLabel>
       <StyledLabel htmlFor="currency">
         Currency:
-        <select id="currency" name="currency">
+        <select id="currency" name="currency" defaultValue={value?.currency}>
           <option value="EUR">EUR</option>
           <option value="USD">USD</option>
           <option value="GBP">GBP</option>
         </select>
       </StyledLabel>
-      <StyledButton type="submit">Submit</StyledButton>
+      <StyledButton type="submit">
+        {isEditMode ? "Update" : "Submit"}
+      </StyledButton>
     </StyledForm>
   );
 }
